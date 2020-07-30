@@ -15,9 +15,9 @@
 
 <style>
 .comment-div {
-  
   height: auto;
 }
+
 .hr-div {
   margin: 5px 0;
   background-color: rgba(0, 0, 0, 0.1);
@@ -26,9 +26,13 @@
   overflow: hidden;
 }
 
-.btGroup{
-padding-bottom:5px
+
+
+#theImg{
+  position: relative;
+
 }
+
 </style>
 
 
@@ -151,10 +155,72 @@ if(request.getAttribute("image") == null){
                 	</div>
 	            	
 	            	<div class="col-xs-12 col-sm-6">
-	                    <div class="details-img-container">
-		                    <img src="travel-images/large/<%= theImage.getPath() %>">
+	                    <div class="details-img-container" id="theImgDiv">
+		                    <img id="theImg" src="travel-images/large/<%= theImage.getPath() %>">
 	                    	<hr>
 	                    </div>
+	                    <div class="col-xs-12"><br></div>
+	                    
+	                    <button class="block-center btn-default btn " id="control-bt"> 双击图片进行放大，单击此处控制图片大小</button>
+	                    <button class="block-center btn btn-default " id="control-bt2">  单击此处隐藏按钮</button>
+	                    
+	                    <div class="col-xs-1"><br></div>
+	                    <div class="btGroup col-xs-10" id="btGroup">
+		                    <div class="row">
+			                    <div class="col-xs-12 col-sm-3"> </div>
+			                    <div class="col-xs-12 col-sm-3">
+			                    	<button class="btn btn-default full-length " id="shang"><span class="glyphicon glyphicon-chevron-up"></span></button>
+		    					</div>	
+			                    <div class="col-xs-12 col-sm-3"> </div>
+			                    <div class="col-xs-12 col-sm-3"> </div>
+		                    </div>
+		                    <div class="col-xs-12"><br></div>
+		                    <div class="row">
+			                    <div class="col-xs-12 col-sm-3">
+		    					    <button class="btn btn-default full-length  " id="zuo"><span class="glyphicon glyphicon-chevron-left"></span></button>
+		    					</div>	
+			                    <div class="col-xs-12 col-sm-3">
+		    						<button class=" btn btn-default full-length" id="xia"><span class="glyphicon glyphicon-chevron-down"></span></button>
+		    					</div>	
+			                    <div class="col-xs-12 col-sm-3">
+		        					<button class="btn btn-default full-length" id="you"><span class="glyphicon glyphicon-chevron-right"></span></button>
+		    					</div>	
+			                    <div class="col-xs-12 col-sm-3">
+		        					<button  class="btn btn-default full-length" id="initbt"><span class="glyphicon glyphicon-refresh"></span></button>
+			                    </div>
+		                    </div>
+
+		                    <div class="col-xs-12 col-sm-6"> 
+		                    </div>
+		                    <div class="col-xs-12 col-sm-6"> 
+		                    </div>
+        				</div>
+        				
+        				<script>
+        					
+        				
+        					var bt_control = document.getElementById("control-bt");
+        					var bt_group = document.getElementById("btGroup");
+        					var bt_control2 = document.getElementById("control-bt2");
+        					
+        					bt_group.style.display="none";
+        					bt_control2.style.display="none";
+        					
+        					bt_control.onclick = function(){
+        						bt_group.style.display = "block";
+        						bt_control.style.display = "none";
+        						bt_contro2.style.display = "inline";
+        					}
+        					bt_control2.onclick = function(){
+        						bt_group.style.display = "none";
+        						bt_control.style.display = "inline-block";
+        						bt_contro2.style.display = "none";
+        						
+        					}
+        					
+        				</script>
+        				
+        				
                 	</div>
                 	
                 	<div class="col-xs-12 col-sm-6">
@@ -208,7 +274,173 @@ if(request.getAttribute("image") == null){
                             <p><%= theImage.getDescription() %></p>
                         </div>
                     </div><!-- end description -->
+                    <script>
                     
+                    //get img\img-div
+    var imgDiv = document.getElementById("theImgDiv");
+    var img = document.getElementById("theImg");
+    var ini_w = img.width;
+    var ini_h = img.height;
+                    
+                    
+    ///alert('width:' + img.width + ',height:' + img.height);
+    //alert('top:' + img.style.top + ',left:' + img.style.left);
+                    
+ 	//100%-130 160 190%                    
+ 	var beishu = 100;
+ 	var gap_beishu = 30;
+ 	
+ 	 //get 4 操控bt
+    var shang = document.getElementById("shang");
+    var xia = document.getElementById("xia");
+    var zuo = document.getElementById("zuo");
+    var you = document.getElementById("you");
+    
+    var initbt = document.getElementById("initbt");
+    
+    var ini_t = 0;
+    var left = 0;
+    var gap = 20;
+    
+    
+    
+    
+    
+    // 5 bts
+        initbt.onclick = function () {
+        initImg();
+    }
+    
+    shang.onclick = function () {
+        ini_t += gap;
+        ini_t = notNeg(ini_t);
+        doMove(left, ini_t, img);
+    }
+
+    xia.onclick = function () {
+        ini_t -= gap;
+        ini_t = notNeg(ini_t);
+        doMove(left, ini_t, img);
+
+    }
+
+
+    zuo.onclick = function () {
+        left -= gap;
+        left = notNeg(left);
+        doMove(left, ini_t, img);
+
+    }
+
+    you.onclick = function () {
+        left += gap;
+        left = notNeg(left);
+        doMove(left, ini_t, img);
+
+    }
+
+
+    function notNeg(num) {
+        if (num >= 0)
+            num = 0;
+
+        console.log("=========not nev 不能>0=========")
+        return num;
+    }
+
+    function doMove() {
+        console.log("----------------do move--------------");
+        console.log("left: " + left);
+        console.log("top:" + ini_t);
+        console.log("倍数：" + beishu);
+        //ini_w  left=小w-大w = ini_w-(ini_w*beishu)~0
+        //ini_h
+        if (left < ini_w - (ini_w * (beishu/100)))
+            left = left + gap;
+        if (ini_t < ini_h - (ini_h * (beishu/100)))
+            ini_t = ini_t + gap;
+
+        img.style.left = left + "px";
+        img.style.top = ini_t + "px";
+        console.log("new left:"+left);
+        console.log("new top"+ini_t);
+        console.log("----------------finish move--------------");
+
+    }
+
+
+    function initImg() {
+        left = 0;
+        ini_t = 0;
+        beishu = 100;
+
+        doMove(left, ini_t, img);
+        img.style.width = beishu + "%";
+    }
+    doEnlarge(imgDiv, img);
+
+    
+    
+    // enlarge
+    doEnlarge(imgDiv, img);
+
+    imgDiv.style.height = ini_h + "px";
+
+    function doEnlarge(theDiv, img) {
+        theDiv.onmouseover = function (ev) {
+
+            //双击放大
+            theDiv.ondblclick = function (ev) {
+
+                var w = parseInt(img.style.width);
+                var h = parseInt(img.style.height);
+                console.log("ondblclick");
+                console.log(w);
+                
+                var beginBeishu = 100+gap_beishu+"";
+
+                switch (w + "") {
+                    case beginBeishu:
+                        beishu = 160;
+                        break;
+                    case "160":
+                        beishu = 190;
+                        break;
+                    case "190":
+                        beishu = 100;
+                        break;
+                    case "100":
+                        beishu = 130;
+                        break;
+                    default:
+                        beishu = 130;
+                        break;
+                }
+                img.style.width = beishu + "%";
+
+                console.log('width:' + img.width + ',height:' + img.height + ";倍数" + beishu);
+
+            };
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+                    
+                    </script>
                     
                     
                     
@@ -413,7 +645,7 @@ if(comments.size() == 0){
 
                	  console.log("uid: " + uid);
                	  console.log("iid: " + iid);
-               	  console.log("comment: " + sendCommentInput.value);
+               	  //console.log("comment: " + sendCommentInput.value);
 
                	  var btSend = document.getElementsByClassName("btSend")[0];
                	  btSend.onclick = function () {
